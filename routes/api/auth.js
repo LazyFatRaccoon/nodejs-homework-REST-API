@@ -4,7 +4,7 @@ const multer = require("multer");
 const { auth: ctrl } = require("../../controllers");
 
 const { auth: tokenCheck, validation, ctrlWrapper } = require("../../helpers");
-const { joiSchema } = require("../../models/user");
+const { joiSchema, emailSchema } = require("../../models/user");
 
 const multerConfig = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -26,6 +26,12 @@ router.post("/login", validation(joiSchema), ctrlWrapper(ctrl.login));
 router.patch("/", tokenCheck, ctrlWrapper(ctrl.updateSubscription));
 router.get("/logout", tokenCheck, ctrlWrapper(ctrl.logout));
 router.get("/current", tokenCheck, ctrlWrapper(ctrl.getCurrent));
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verifyEmailToken));
+router.post(
+  "/verify",
+  validation(emailSchema),
+  ctrlWrapper(ctrl.verificationResend)
+);
 
 router.patch(
   "/avatars",

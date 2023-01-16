@@ -8,8 +8,8 @@ const { httpError } = require("../../helpers");
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    throw httpError(401, "Email or password is wrong");
+  if (!user || !bcrypt.compareSync(password, user.password) || !user.verify) {
+    throw httpError(401, "Email or password is wrong or email is not verify");
   }
 
   const payload = {
